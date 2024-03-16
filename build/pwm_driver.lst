@@ -1,0 +1,874 @@
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"pwm_driver.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/pwm_driver.c"
+  20              		.section	.text.pwm_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	pwm_init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	pwm_init:
+  28              	.LFB141:
+   1:Core/Src/pwm_driver.c **** #include "pwm_driver.h"
+   2:Core/Src/pwm_driver.c **** #include "stm32f7xx_hal.h"
+   3:Core/Src/pwm_driver.c **** #include "stm32f7xx_hal_tim.h"
+   4:Core/Src/pwm_driver.c **** #include <string.h> // memcpy
+   5:Core/Src/pwm_driver.c **** #include <stdlib.h> // malloc
+   6:Core/Src/pwm_driver.c **** 
+   7:Core/Src/pwm_driver.c **** TIM_HandleTypeDef pwm_htim;
+   8:Core/Src/pwm_driver.c **** int duty_scalar;
+   9:Core/Src/pwm_driver.c **** 
+  10:Core/Src/pwm_driver.c **** int pwm_init()
+  11:Core/Src/pwm_driver.c **** {
+  29              		.loc 1 11 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 128
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 30B5     		push	{r4, r5, lr}
+  34              		.cfi_def_cfa_offset 12
+  35              		.cfi_offset 4, -12
+  36              		.cfi_offset 5, -8
+  37              		.cfi_offset 14, -4
+  38 0002 A1B0     		sub	sp, sp, #132
+  39              		.cfi_def_cfa_offset 144
+  12:Core/Src/pwm_driver.c ****     duty_scalar =  SystemCoreClock / PWM_SWITCHING_FREQUENCY / 4;
+  40              		.loc 1 12 5 view .LVU1
+  41              		.loc 1 12 62 is_stmt 0 view .LVU2
+  42 0004 534B     		ldr	r3, .L19
+  43 0006 1D68     		ldr	r5, [r3]
+  44 0008 534B     		ldr	r3, .L19+4
+  45 000a A3FB0535 		umull	r3, r5, r3, r5
+  46 000e 2D0B     		lsrs	r5, r5, #12
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 2
+
+
+  47              		.loc 1 12 17 view .LVU3
+  48 0010 524B     		ldr	r3, .L19+8
+  49 0012 1D60     		str	r5, [r3]
+  13:Core/Src/pwm_driver.c ****     // Mostly copied from HAL
+  14:Core/Src/pwm_driver.c ****     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  50              		.loc 1 14 5 is_stmt 1 view .LVU4
+  51              		.loc 1 14 28 is_stmt 0 view .LVU5
+  52 0014 0024     		movs	r4, #0
+  53 0016 1C94     		str	r4, [sp, #112]
+  54 0018 1D94     		str	r4, [sp, #116]
+  55 001a 1E94     		str	r4, [sp, #120]
+  56 001c 1F94     		str	r4, [sp, #124]
+  15:Core/Src/pwm_driver.c ****     TIM_MasterConfigTypeDef sMasterConfig = {0};
+  57              		.loc 1 15 5 is_stmt 1 view .LVU6
+  58              		.loc 1 15 29 is_stmt 0 view .LVU7
+  59 001e 1994     		str	r4, [sp, #100]
+  60 0020 1A94     		str	r4, [sp, #104]
+  61 0022 1B94     		str	r4, [sp, #108]
+  16:Core/Src/pwm_driver.c ****     TIM_OC_InitTypeDef sConfigOC = {0};
+  62              		.loc 1 16 5 is_stmt 1 view .LVU8
+  63              		.loc 1 16 24 is_stmt 0 view .LVU9
+  64 0024 1294     		str	r4, [sp, #72]
+  65 0026 1394     		str	r4, [sp, #76]
+  66 0028 1494     		str	r4, [sp, #80]
+  67 002a 1594     		str	r4, [sp, #84]
+  68 002c 1694     		str	r4, [sp, #88]
+  69 002e 1794     		str	r4, [sp, #92]
+  70 0030 1894     		str	r4, [sp, #96]
+  17:Core/Src/pwm_driver.c ****     TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
+  71              		.loc 1 17 5 is_stmt 1 view .LVU10
+  72              		.loc 1 17 36 is_stmt 0 view .LVU11
+  73 0032 2C22     		movs	r2, #44
+  74 0034 2146     		mov	r1, r4
+  75 0036 07A8     		add	r0, sp, #28
+  76 0038 FFF7FEFF 		bl	memset
+  77              	.LVL0:
+  18:Core/Src/pwm_driver.c **** 
+  19:Core/Src/pwm_driver.c ****     pwm_htim.Instance = TIM1;
+  78              		.loc 1 19 5 is_stmt 1 view .LVU12
+  79              		.loc 1 19 23 is_stmt 0 view .LVU13
+  80 003c 4848     		ldr	r0, .L19+12
+  81 003e 494B     		ldr	r3, .L19+16
+  82 0040 0360     		str	r3, [r0]
+  20:Core/Src/pwm_driver.c ****     pwm_htim.Init.Prescaler = 0;
+  83              		.loc 1 20 5 is_stmt 1 view .LVU14
+  84              		.loc 1 20 29 is_stmt 0 view .LVU15
+  85 0042 4460     		str	r4, [r0, #4]
+  21:Core/Src/pwm_driver.c ****     pwm_htim.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;
+  86              		.loc 1 21 5 is_stmt 1 view .LVU16
+  87              		.loc 1 21 31 is_stmt 0 view .LVU17
+  88 0044 6023     		movs	r3, #96
+  89 0046 8360     		str	r3, [r0, #8]
+  22:Core/Src/pwm_driver.c ****     pwm_htim.Init.Period = duty_scalar * 2;
+  90              		.loc 1 22 5 is_stmt 1 view .LVU18
+  91              		.loc 1 22 40 is_stmt 0 view .LVU19
+  92 0048 6D00     		lsls	r5, r5, #1
+  93              		.loc 1 22 26 view .LVU20
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 3
+
+
+  94 004a C560     		str	r5, [r0, #12]
+  23:Core/Src/pwm_driver.c ****     pwm_htim.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  95              		.loc 1 23 5 is_stmt 1 view .LVU21
+  96              		.loc 1 23 33 is_stmt 0 view .LVU22
+  97 004c 0461     		str	r4, [r0, #16]
+  24:Core/Src/pwm_driver.c ****     pwm_htim.Init.RepetitionCounter = 0;
+  98              		.loc 1 24 5 is_stmt 1 view .LVU23
+  99              		.loc 1 24 37 is_stmt 0 view .LVU24
+ 100 004e 4461     		str	r4, [r0, #20]
+  25:Core/Src/pwm_driver.c ****     pwm_htim.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+ 101              		.loc 1 25 5 is_stmt 1 view .LVU25
+ 102              		.loc 1 25 37 is_stmt 0 view .LVU26
+ 103 0050 8023     		movs	r3, #128
+ 104 0052 8361     		str	r3, [r0, #24]
+  26:Core/Src/pwm_driver.c ****     if (HAL_TIM_Base_Init(&pwm_htim) != HAL_OK)
+ 105              		.loc 1 26 5 is_stmt 1 view .LVU27
+ 106              		.loc 1 26 9 is_stmt 0 view .LVU28
+ 107 0054 FFF7FEFF 		bl	HAL_TIM_Base_Init
+ 108              	.LVL1:
+ 109              		.loc 1 26 8 discriminator 1 view .LVU29
+ 110 0058 0028     		cmp	r0, #0
+ 111 005a 62D1     		bne	.L11
+ 112              	.L2:
+  27:Core/Src/pwm_driver.c ****     {
+  28:Core/Src/pwm_driver.c ****         Error_Handler();
+  29:Core/Src/pwm_driver.c ****     }
+  30:Core/Src/pwm_driver.c ****     sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+ 113              		.loc 1 30 5 is_stmt 1 view .LVU30
+ 114              		.loc 1 30 36 is_stmt 0 view .LVU31
+ 115 005c 4FF48053 		mov	r3, #4096
+ 116 0060 1C93     		str	r3, [sp, #112]
+  31:Core/Src/pwm_driver.c ****     if (HAL_TIM_ConfigClockSource(&pwm_htim, &sClockSourceConfig) != HAL_OK)
+ 117              		.loc 1 31 5 is_stmt 1 view .LVU32
+ 118              		.loc 1 31 9 is_stmt 0 view .LVU33
+ 119 0062 1CA9     		add	r1, sp, #112
+ 120 0064 3E48     		ldr	r0, .L19+12
+ 121 0066 FFF7FEFF 		bl	HAL_TIM_ConfigClockSource
+ 122              	.LVL2:
+ 123              		.loc 1 31 8 discriminator 1 view .LVU34
+ 124 006a 0028     		cmp	r0, #0
+ 125 006c 5CD1     		bne	.L12
+ 126              	.L3:
+  32:Core/Src/pwm_driver.c ****     {
+  33:Core/Src/pwm_driver.c ****         Error_Handler();
+  34:Core/Src/pwm_driver.c ****     }
+  35:Core/Src/pwm_driver.c ****     if (HAL_TIM_PWM_Init(&pwm_htim) != HAL_OK)
+ 127              		.loc 1 35 5 is_stmt 1 view .LVU35
+ 128              		.loc 1 35 9 is_stmt 0 view .LVU36
+ 129 006e 3C48     		ldr	r0, .L19+12
+ 130 0070 FFF7FEFF 		bl	HAL_TIM_PWM_Init
+ 131              	.LVL3:
+ 132              		.loc 1 35 8 discriminator 1 view .LVU37
+ 133 0074 0028     		cmp	r0, #0
+ 134 0076 5AD1     		bne	.L13
+ 135              	.L4:
+  36:Core/Src/pwm_driver.c ****     {
+  37:Core/Src/pwm_driver.c ****         Error_Handler();
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 4
+
+
+  38:Core/Src/pwm_driver.c ****     }
+  39:Core/Src/pwm_driver.c ****     sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+ 136              		.loc 1 39 5 is_stmt 1 view .LVU38
+ 137              		.loc 1 39 39 is_stmt 0 view .LVU39
+ 138 0078 0023     		movs	r3, #0
+ 139 007a 1993     		str	r3, [sp, #100]
+  40:Core/Src/pwm_driver.c ****     sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+ 140              		.loc 1 40 5 is_stmt 1 view .LVU40
+ 141              		.loc 1 40 35 is_stmt 0 view .LVU41
+ 142 007c 1B93     		str	r3, [sp, #108]
+  41:Core/Src/pwm_driver.c ****     if (HAL_TIMEx_MasterConfigSynchronization(&pwm_htim, &sMasterConfig) != HAL_OK)
+ 143              		.loc 1 41 5 is_stmt 1 view .LVU42
+ 144              		.loc 1 41 9 is_stmt 0 view .LVU43
+ 145 007e 19A9     		add	r1, sp, #100
+ 146 0080 3748     		ldr	r0, .L19+12
+ 147 0082 FFF7FEFF 		bl	HAL_TIMEx_MasterConfigSynchronization
+ 148              	.LVL4:
+ 149              		.loc 1 41 8 discriminator 1 view .LVU44
+ 150 0086 0028     		cmp	r0, #0
+ 151 0088 54D1     		bne	.L14
+ 152              	.L5:
+  42:Core/Src/pwm_driver.c ****     {
+  43:Core/Src/pwm_driver.c ****         Error_Handler();
+  44:Core/Src/pwm_driver.c ****     }
+  45:Core/Src/pwm_driver.c ****     sConfigOC.OCMode = TIM_OCMODE_PWM2;
+ 153              		.loc 1 45 5 is_stmt 1 view .LVU45
+ 154              		.loc 1 45 22 is_stmt 0 view .LVU46
+ 155 008a 7023     		movs	r3, #112
+ 156 008c 1293     		str	r3, [sp, #72]
+  46:Core/Src/pwm_driver.c ****     sConfigOC.Pulse = 0;
+ 157              		.loc 1 46 5 is_stmt 1 view .LVU47
+ 158              		.loc 1 46 21 is_stmt 0 view .LVU48
+ 159 008e 0022     		movs	r2, #0
+ 160 0090 1392     		str	r2, [sp, #76]
+  47:Core/Src/pwm_driver.c ****     sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+ 161              		.loc 1 47 5 is_stmt 1 view .LVU49
+ 162              		.loc 1 47 26 is_stmt 0 view .LVU50
+ 163 0092 1492     		str	r2, [sp, #80]
+  48:Core/Src/pwm_driver.c ****     sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+ 164              		.loc 1 48 5 is_stmt 1 view .LVU51
+ 165              		.loc 1 48 27 is_stmt 0 view .LVU52
+ 166 0094 1592     		str	r2, [sp, #84]
+  49:Core/Src/pwm_driver.c ****     sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+ 167              		.loc 1 49 5 is_stmt 1 view .LVU53
+ 168              		.loc 1 49 26 is_stmt 0 view .LVU54
+ 169 0096 1692     		str	r2, [sp, #88]
+  50:Core/Src/pwm_driver.c ****     sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
+ 170              		.loc 1 50 5 is_stmt 1 view .LVU55
+ 171              		.loc 1 50 27 is_stmt 0 view .LVU56
+ 172 0098 1792     		str	r2, [sp, #92]
+  51:Core/Src/pwm_driver.c ****     sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+ 173              		.loc 1 51 5 is_stmt 1 view .LVU57
+ 174              		.loc 1 51 28 is_stmt 0 view .LVU58
+ 175 009a 1892     		str	r2, [sp, #96]
+  52:Core/Src/pwm_driver.c ****     if (HAL_TIM_PWM_ConfigChannel(&pwm_htim, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+ 176              		.loc 1 52 5 is_stmt 1 view .LVU59
+ 177              		.loc 1 52 9 is_stmt 0 view .LVU60
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 5
+
+
+ 178 009c 12A9     		add	r1, sp, #72
+ 179 009e 3048     		ldr	r0, .L19+12
+ 180 00a0 FFF7FEFF 		bl	HAL_TIM_PWM_ConfigChannel
+ 181              	.LVL5:
+ 182              		.loc 1 52 8 discriminator 1 view .LVU61
+ 183 00a4 0028     		cmp	r0, #0
+ 184 00a6 48D1     		bne	.L15
+ 185              	.L6:
+  53:Core/Src/pwm_driver.c ****     {
+  54:Core/Src/pwm_driver.c ****         Error_Handler();
+  55:Core/Src/pwm_driver.c ****     }
+  56:Core/Src/pwm_driver.c ****     if (HAL_TIM_PWM_ConfigChannel(&pwm_htim, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+ 186              		.loc 1 56 5 is_stmt 1 view .LVU62
+ 187              		.loc 1 56 9 is_stmt 0 view .LVU63
+ 188 00a8 0422     		movs	r2, #4
+ 189 00aa 12A9     		add	r1, sp, #72
+ 190 00ac 2C48     		ldr	r0, .L19+12
+ 191 00ae FFF7FEFF 		bl	HAL_TIM_PWM_ConfigChannel
+ 192              	.LVL6:
+ 193              		.loc 1 56 8 discriminator 1 view .LVU64
+ 194 00b2 0028     		cmp	r0, #0
+ 195 00b4 44D1     		bne	.L16
+ 196              	.L7:
+  57:Core/Src/pwm_driver.c ****     {
+  58:Core/Src/pwm_driver.c ****         Error_Handler();
+  59:Core/Src/pwm_driver.c ****     }
+  60:Core/Src/pwm_driver.c ****     if (HAL_TIM_PWM_ConfigChannel(&pwm_htim, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
+ 197              		.loc 1 60 5 is_stmt 1 view .LVU65
+ 198              		.loc 1 60 9 is_stmt 0 view .LVU66
+ 199 00b6 0822     		movs	r2, #8
+ 200 00b8 12A9     		add	r1, sp, #72
+ 201 00ba 2948     		ldr	r0, .L19+12
+ 202 00bc FFF7FEFF 		bl	HAL_TIM_PWM_ConfigChannel
+ 203              	.LVL7:
+ 204              		.loc 1 60 8 discriminator 1 view .LVU67
+ 205 00c0 0028     		cmp	r0, #0
+ 206 00c2 40D1     		bne	.L17
+ 207              	.L8:
+  61:Core/Src/pwm_driver.c ****     {
+  62:Core/Src/pwm_driver.c ****         Error_Handler();
+  63:Core/Src/pwm_driver.c ****     }
+  64:Core/Src/pwm_driver.c ****     sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
+ 208              		.loc 1 64 5 is_stmt 1 view .LVU68
+ 209              		.loc 1 64 42 is_stmt 0 view .LVU69
+ 210 00c4 0023     		movs	r3, #0
+ 211 00c6 0793     		str	r3, [sp, #28]
+  65:Core/Src/pwm_driver.c ****     sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
+ 212              		.loc 1 65 5 is_stmt 1 view .LVU70
+ 213              		.loc 1 65 43 is_stmt 0 view .LVU71
+ 214 00c8 0893     		str	r3, [sp, #32]
+  66:Core/Src/pwm_driver.c ****     sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
+ 215              		.loc 1 66 5 is_stmt 1 view .LVU72
+ 216              		.loc 1 66 36 is_stmt 0 view .LVU73
+ 217 00ca 0993     		str	r3, [sp, #36]
+  67:Core/Src/pwm_driver.c ****     sBreakDeadTimeConfig.DeadTime = 8;
+ 218              		.loc 1 67 5 is_stmt 1 view .LVU74
+ 219              		.loc 1 67 35 is_stmt 0 view .LVU75
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 6
+
+
+ 220 00cc 0822     		movs	r2, #8
+ 221 00ce 0A92     		str	r2, [sp, #40]
+  68:Core/Src/pwm_driver.c ****     sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
+ 222              		.loc 1 68 5 is_stmt 1 view .LVU76
+ 223              		.loc 1 68 37 is_stmt 0 view .LVU77
+ 224 00d0 0B93     		str	r3, [sp, #44]
+  69:Core/Src/pwm_driver.c ****     sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
+ 225              		.loc 1 69 5 is_stmt 1 view .LVU78
+ 226              		.loc 1 69 40 is_stmt 0 view .LVU79
+ 227 00d2 4FF40052 		mov	r2, #8192
+ 228 00d6 0C92     		str	r2, [sp, #48]
+  70:Core/Src/pwm_driver.c ****     sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+ 229              		.loc 1 70 5 is_stmt 1 view .LVU80
+ 230              		.loc 1 70 42 is_stmt 0 view .LVU81
+ 231 00d8 1193     		str	r3, [sp, #68]
+  71:Core/Src/pwm_driver.c ****     if (HAL_TIMEx_ConfigBreakDeadTime(&pwm_htim, &sBreakDeadTimeConfig) != HAL_OK)
+ 232              		.loc 1 71 5 is_stmt 1 view .LVU82
+ 233              		.loc 1 71 9 is_stmt 0 view .LVU83
+ 234 00da 07A9     		add	r1, sp, #28
+ 235 00dc 2048     		ldr	r0, .L19+12
+ 236 00de FFF7FEFF 		bl	HAL_TIMEx_ConfigBreakDeadTime
+ 237              	.LVL8:
+ 238              		.loc 1 71 8 discriminator 1 view .LVU84
+ 239 00e2 0028     		cmp	r0, #0
+ 240 00e4 32D1     		bne	.L18
+ 241              	.L9:
+  72:Core/Src/pwm_driver.c ****     {
+  73:Core/Src/pwm_driver.c ****         Error_Handler();
+  74:Core/Src/pwm_driver.c ****     }
+  75:Core/Src/pwm_driver.c ****       
+  76:Core/Src/pwm_driver.c ****     GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 242              		.loc 1 76 5 is_stmt 1 view .LVU85
+ 243              		.loc 1 76 22 is_stmt 0 view .LVU86
+ 244 00e6 0024     		movs	r4, #0
+ 245 00e8 0294     		str	r4, [sp, #8]
+ 246 00ea 0394     		str	r4, [sp, #12]
+ 247 00ec 0494     		str	r4, [sp, #16]
+ 248 00ee 0594     		str	r4, [sp, #20]
+ 249 00f0 0694     		str	r4, [sp, #24]
+  77:Core/Src/pwm_driver.c ****     __HAL_RCC_GPIOE_CLK_ENABLE();
+ 250              		.loc 1 77 5 is_stmt 1 view .LVU87
+ 251              	.LBB2:
+ 252              		.loc 1 77 5 view .LVU88
+ 253              		.loc 1 77 5 view .LVU89
+ 254 00f2 1D4B     		ldr	r3, .L19+20
+ 255 00f4 1A6B     		ldr	r2, [r3, #48]
+ 256 00f6 42F01002 		orr	r2, r2, #16
+ 257 00fa 1A63     		str	r2, [r3, #48]
+ 258              		.loc 1 77 5 view .LVU90
+ 259 00fc 1B6B     		ldr	r3, [r3, #48]
+ 260 00fe 03F01003 		and	r3, r3, #16
+ 261 0102 0193     		str	r3, [sp, #4]
+ 262              		.loc 1 77 5 view .LVU91
+ 263 0104 019B     		ldr	r3, [sp, #4]
+ 264              	.LBE2:
+ 265              		.loc 1 77 5 view .LVU92
+  78:Core/Src/pwm_driver.c ****     /**TIM1 GPIO Configuration
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 7
+
+
+  79:Core/Src/pwm_driver.c ****     PE8     ------> TIM1_CH1N
+  80:Core/Src/pwm_driver.c ****     PE9     ------> TIM1_CH1
+  81:Core/Src/pwm_driver.c ****     PE10     ------> TIM1_CH2N
+  82:Core/Src/pwm_driver.c ****     PE11     ------> TIM1_CH2
+  83:Core/Src/pwm_driver.c ****     PE12     ------> TIM1_CH3N
+  84:Core/Src/pwm_driver.c ****     PE13     ------> TIM1_CH3
+  85:Core/Src/pwm_driver.c ****     */
+  86:Core/Src/pwm_driver.c ****     GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11
+ 266              		.loc 1 86 5 view .LVU93
+ 267              		.loc 1 86 25 is_stmt 0 view .LVU94
+ 268 0106 4FF47C53 		mov	r3, #16128
+ 269 010a 0293     		str	r3, [sp, #8]
+  87:Core/Src/pwm_driver.c ****                         |GPIO_PIN_12|GPIO_PIN_13;
+  88:Core/Src/pwm_driver.c ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 270              		.loc 1 88 5 is_stmt 1 view .LVU95
+ 271              		.loc 1 88 26 is_stmt 0 view .LVU96
+ 272 010c 0223     		movs	r3, #2
+ 273 010e 0393     		str	r3, [sp, #12]
+  89:Core/Src/pwm_driver.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 274              		.loc 1 89 5 is_stmt 1 view .LVU97
+  90:Core/Src/pwm_driver.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 275              		.loc 1 90 5 view .LVU98
+  91:Core/Src/pwm_driver.c ****     GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
+ 276              		.loc 1 91 5 view .LVU99
+ 277              		.loc 1 91 31 is_stmt 0 view .LVU100
+ 278 0110 0123     		movs	r3, #1
+ 279 0112 0693     		str	r3, [sp, #24]
+  92:Core/Src/pwm_driver.c ****     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+ 280              		.loc 1 92 5 is_stmt 1 view .LVU101
+ 281 0114 02A9     		add	r1, sp, #8
+ 282 0116 1548     		ldr	r0, .L19+24
+ 283 0118 FFF7FEFF 		bl	HAL_GPIO_Init
+ 284              	.LVL9:
+  93:Core/Src/pwm_driver.c ****     
+  94:Core/Src/pwm_driver.c ****     return 0;
+ 285              		.loc 1 94 5 view .LVU102
+  95:Core/Src/pwm_driver.c **** }
+ 286              		.loc 1 95 1 is_stmt 0 view .LVU103
+ 287 011c 2046     		mov	r0, r4
+ 288 011e 21B0     		add	sp, sp, #132
+ 289              		.cfi_remember_state
+ 290              		.cfi_def_cfa_offset 12
+ 291              		@ sp needed
+ 292 0120 30BD     		pop	{r4, r5, pc}
+ 293              	.L11:
+ 294              		.cfi_restore_state
+ 295              	.LBB3:
+  28:Core/Src/pwm_driver.c ****     }
+ 296              		.loc 1 28 9 is_stmt 1 view .LVU104
+ 297 0122 FFF7FEFF 		bl	Error_Handler
+ 298              	.LVL10:
+ 299 0126 99E7     		b	.L2
+ 300              	.L12:
+ 301              	.LBE3:
+ 302              	.LBB4:
+  33:Core/Src/pwm_driver.c ****     }
+ 303              		.loc 1 33 9 view .LVU105
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 8
+
+
+ 304 0128 FFF7FEFF 		bl	Error_Handler
+ 305              	.LVL11:
+ 306 012c 9FE7     		b	.L3
+ 307              	.L13:
+ 308              	.LBE4:
+ 309              	.LBB5:
+  37:Core/Src/pwm_driver.c ****     }
+ 310              		.loc 1 37 9 view .LVU106
+ 311 012e FFF7FEFF 		bl	Error_Handler
+ 312              	.LVL12:
+ 313 0132 A1E7     		b	.L4
+ 314              	.L14:
+ 315              	.LBE5:
+ 316              	.LBB6:
+  43:Core/Src/pwm_driver.c ****     }
+ 317              		.loc 1 43 9 view .LVU107
+ 318 0134 FFF7FEFF 		bl	Error_Handler
+ 319              	.LVL13:
+ 320 0138 A7E7     		b	.L5
+ 321              	.L15:
+ 322              	.LBE6:
+ 323              	.LBB7:
+  54:Core/Src/pwm_driver.c ****     }
+ 324              		.loc 1 54 9 view .LVU108
+ 325 013a FFF7FEFF 		bl	Error_Handler
+ 326              	.LVL14:
+ 327 013e B3E7     		b	.L6
+ 328              	.L16:
+ 329              	.LBE7:
+ 330              	.LBB8:
+  58:Core/Src/pwm_driver.c ****     }
+ 331              		.loc 1 58 9 view .LVU109
+ 332 0140 FFF7FEFF 		bl	Error_Handler
+ 333              	.LVL15:
+ 334 0144 B7E7     		b	.L7
+ 335              	.L17:
+ 336              	.LBE8:
+ 337              	.LBB9:
+  62:Core/Src/pwm_driver.c ****     }
+ 338              		.loc 1 62 9 view .LVU110
+ 339 0146 FFF7FEFF 		bl	Error_Handler
+ 340              	.LVL16:
+ 341 014a BBE7     		b	.L8
+ 342              	.L18:
+ 343              	.LBE9:
+ 344              	.LBB10:
+  73:Core/Src/pwm_driver.c ****     }
+ 345              		.loc 1 73 9 view .LVU111
+ 346 014c FFF7FEFF 		bl	Error_Handler
+ 347              	.LVL17:
+ 348 0150 C9E7     		b	.L9
+ 349              	.L20:
+ 350 0152 00BF     		.align	2
+ 351              	.L19:
+ 352 0154 00000000 		.word	SystemCoreClock
+ 353 0158 D34D6210 		.word	274877907
+ 354 015c 00000000 		.word	duty_scalar
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 9
+
+
+ 355 0160 00000000 		.word	pwm_htim
+ 356 0164 00000140 		.word	1073807360
+ 357 0168 00380240 		.word	1073887232
+ 358 016c 00100240 		.word	1073876992
+ 359              	.LBE10:
+ 360              		.cfi_endproc
+ 361              	.LFE141:
+ 363              		.section	.text.pwm_set_frequency,"ax",%progbits
+ 364              		.align	1
+ 365              		.global	pwm_set_frequency
+ 366              		.syntax unified
+ 367              		.thumb
+ 368              		.thumb_func
+ 370              	pwm_set_frequency:
+ 371              	.LVL18:
+ 372              	.LFB142:
+  96:Core/Src/pwm_driver.c **** 
+  97:Core/Src/pwm_driver.c **** int pwm_set_frequency(int freq)
+  98:Core/Src/pwm_driver.c **** {
+ 373              		.loc 1 98 1 view -0
+ 374              		.cfi_startproc
+ 375              		@ args = 0, pretend = 0, frame = 0
+ 376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 377              		@ link register save eliminated.
+  99:Core/Src/pwm_driver.c ****     return 0;
+ 378              		.loc 1 99 5 view .LVU113
+ 100:Core/Src/pwm_driver.c **** }
+ 379              		.loc 1 100 1 is_stmt 0 view .LVU114
+ 380 0000 0020     		movs	r0, #0
+ 381              	.LVL19:
+ 382              		.loc 1 100 1 view .LVU115
+ 383 0002 7047     		bx	lr
+ 384              		.cfi_endproc
+ 385              	.LFE142:
+ 387              		.section	.text.pwm_set_duty,"ax",%progbits
+ 388              		.align	1
+ 389              		.global	pwm_set_duty
+ 390              		.syntax unified
+ 391              		.thumb
+ 392              		.thumb_func
+ 394              	pwm_set_duty:
+ 395              	.LVL20:
+ 396              	.LFB143:
+ 101:Core/Src/pwm_driver.c **** 
+ 102:Core/Src/pwm_driver.c **** int pwm_set_duty(float duty1, float duty2, float duty3)
+ 103:Core/Src/pwm_driver.c **** {
+ 397              		.loc 1 103 1 is_stmt 1 view -0
+ 398              		.cfi_startproc
+ 399              		@ args = 0, pretend = 0, frame = 0
+ 400              		@ frame_needed = 0, uses_anonymous_args = 0
+ 401              		@ link register save eliminated.
+ 104:Core/Src/pwm_driver.c ****     // pwm_htim.Instance->CCR1 = sine_ref[(counter) % 100];
+ 105:Core/Src/pwm_driver.c ****     // pwm_htim.Instance->CCR2 = sine_ref[(counter+33) % 100];
+ 106:Core/Src/pwm_driver.c ****     // pwm_htim.Instance->CCR3 = sine_ref[(counter+67) % 100];
+ 107:Core/Src/pwm_driver.c ****     pwm_htim.Instance->CCR1 = (int)(duty1 * duty_scalar);
+ 402              		.loc 1 107 5 view .LVU117
+ 403              		.loc 1 107 43 is_stmt 0 view .LVU118
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 10
+
+
+ 404 0000 0D4B     		ldr	r3, .L23
+ 405 0002 D3ED007A 		vldr.32	s15, [r3]	@ int
+ 406 0006 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 407 000a 27EE800A 		vmul.f32	s0, s15, s0
+ 408              	.LVL21:
+ 409              		.loc 1 107 13 view .LVU119
+ 410 000e 0B4B     		ldr	r3, .L23+4
+ 411 0010 1B68     		ldr	r3, [r3]
+ 412              		.loc 1 107 31 view .LVU120
+ 413 0012 BDEEC00A 		vcvt.s32.f32	s0, s0
+ 414              		.loc 1 107 29 view .LVU121
+ 415 0016 83ED0D0A 		vstr.32	s0, [r3, #52]	@ int
+ 108:Core/Src/pwm_driver.c ****     pwm_htim.Instance->CCR2 = (int)(duty2 * duty_scalar);
+ 416              		.loc 1 108 5 is_stmt 1 view .LVU122
+ 417              		.loc 1 108 43 is_stmt 0 view .LVU123
+ 418 001a 67EEA00A 		vmul.f32	s1, s15, s1
+ 419              	.LVL22:
+ 420              		.loc 1 108 31 view .LVU124
+ 421 001e FDEEE00A 		vcvt.s32.f32	s1, s1
+ 422              		.loc 1 108 29 view .LVU125
+ 423 0022 C3ED0E0A 		vstr.32	s1, [r3, #56]	@ int
+ 109:Core/Src/pwm_driver.c ****     pwm_htim.Instance->CCR3 = (int)(duty3 * duty_scalar);
+ 424              		.loc 1 109 5 is_stmt 1 view .LVU126
+ 425              		.loc 1 109 43 is_stmt 0 view .LVU127
+ 426 0026 67EE817A 		vmul.f32	s15, s15, s2
+ 427              		.loc 1 109 31 view .LVU128
+ 428 002a FDEEE77A 		vcvt.s32.f32	s15, s15
+ 429              		.loc 1 109 29 view .LVU129
+ 430 002e C3ED0F7A 		vstr.32	s15, [r3, #60]	@ int
+ 110:Core/Src/pwm_driver.c ****     return 0;
+ 431              		.loc 1 110 5 is_stmt 1 view .LVU130
+ 111:Core/Src/pwm_driver.c **** }
+ 432              		.loc 1 111 1 is_stmt 0 view .LVU131
+ 433 0032 0020     		movs	r0, #0
+ 434 0034 7047     		bx	lr
+ 435              	.L24:
+ 436 0036 00BF     		.align	2
+ 437              	.L23:
+ 438 0038 00000000 		.word	duty_scalar
+ 439 003c 00000000 		.word	pwm_htim
+ 440              		.cfi_endproc
+ 441              	.LFE143:
+ 443              		.section	.text.pwm_start,"ax",%progbits
+ 444              		.align	1
+ 445              		.global	pwm_start
+ 446              		.syntax unified
+ 447              		.thumb
+ 448              		.thumb_func
+ 450              	pwm_start:
+ 451              	.LFB144:
+ 112:Core/Src/pwm_driver.c **** 
+ 113:Core/Src/pwm_driver.c **** int pwm_start()
+ 114:Core/Src/pwm_driver.c **** {
+ 452              		.loc 1 114 1 is_stmt 1 view -0
+ 453              		.cfi_startproc
+ 454              		@ args = 0, pretend = 0, frame = 0
+ 455              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 11
+
+
+ 456 0000 38B5     		push	{r3, r4, r5, lr}
+ 457              		.cfi_def_cfa_offset 16
+ 458              		.cfi_offset 3, -16
+ 459              		.cfi_offset 4, -12
+ 460              		.cfi_offset 5, -8
+ 461              		.cfi_offset 14, -4
+ 115:Core/Src/pwm_driver.c ****     int ret = 0;
+ 462              		.loc 1 115 5 view .LVU133
+ 463              	.LVL23:
+ 116:Core/Src/pwm_driver.c ****     ret |= HAL_TIM_PWM_Start(&pwm_htim, TIM_CHANNEL_1);
+ 464              		.loc 1 116 5 view .LVU134
+ 465              		.loc 1 116 12 is_stmt 0 view .LVU135
+ 466 0002 124D     		ldr	r5, .L27
+ 467 0004 0021     		movs	r1, #0
+ 468 0006 2846     		mov	r0, r5
+ 469 0008 FFF7FEFF 		bl	HAL_TIM_PWM_Start
+ 470              	.LVL24:
+ 471 000c 0446     		mov	r4, r0
+ 472              	.LVL25:
+ 117:Core/Src/pwm_driver.c ****     ret |= HAL_TIMEx_PWMN_Start(&pwm_htim, TIM_CHANNEL_1);
+ 473              		.loc 1 117 5 is_stmt 1 view .LVU136
+ 474              		.loc 1 117 12 is_stmt 0 view .LVU137
+ 475 000e 0021     		movs	r1, #0
+ 476 0010 2846     		mov	r0, r5
+ 477 0012 FFF7FEFF 		bl	HAL_TIMEx_PWMN_Start
+ 478              	.LVL26:
+ 479 0016 0443     		orrs	r4, r4, r0
+ 480              	.LVL27:
+ 481              		.loc 1 117 12 view .LVU138
+ 482 0018 E4B2     		uxtb	r4, r4
+ 483              	.LVL28:
+ 118:Core/Src/pwm_driver.c ****     ret |= HAL_TIM_PWM_Start(&pwm_htim, TIM_CHANNEL_2);
+ 484              		.loc 1 118 5 is_stmt 1 view .LVU139
+ 485              		.loc 1 118 12 is_stmt 0 view .LVU140
+ 486 001a 0421     		movs	r1, #4
+ 487 001c 2846     		mov	r0, r5
+ 488 001e FFF7FEFF 		bl	HAL_TIM_PWM_Start
+ 489              	.LVL29:
+ 490 0022 0443     		orrs	r4, r4, r0
+ 491              	.LVL30:
+ 492              		.loc 1 118 12 view .LVU141
+ 493 0024 E4B2     		uxtb	r4, r4
+ 494              	.LVL31:
+ 119:Core/Src/pwm_driver.c ****     ret |= HAL_TIMEx_PWMN_Start(&pwm_htim, TIM_CHANNEL_2);
+ 495              		.loc 1 119 5 is_stmt 1 view .LVU142
+ 496              		.loc 1 119 12 is_stmt 0 view .LVU143
+ 497 0026 0421     		movs	r1, #4
+ 498 0028 2846     		mov	r0, r5
+ 499 002a FFF7FEFF 		bl	HAL_TIMEx_PWMN_Start
+ 500              	.LVL32:
+ 501 002e 0443     		orrs	r4, r4, r0
+ 502              	.LVL33:
+ 503              		.loc 1 119 12 view .LVU144
+ 504 0030 E4B2     		uxtb	r4, r4
+ 505              	.LVL34:
+ 120:Core/Src/pwm_driver.c ****     ret |= HAL_TIM_PWM_Start(&pwm_htim, TIM_CHANNEL_3);
+ 506              		.loc 1 120 5 is_stmt 1 view .LVU145
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 12
+
+
+ 507              		.loc 1 120 12 is_stmt 0 view .LVU146
+ 508 0032 0821     		movs	r1, #8
+ 509 0034 2846     		mov	r0, r5
+ 510 0036 FFF7FEFF 		bl	HAL_TIM_PWM_Start
+ 511              	.LVL35:
+ 512 003a 0443     		orrs	r4, r4, r0
+ 513              	.LVL36:
+ 514              		.loc 1 120 12 view .LVU147
+ 515 003c E4B2     		uxtb	r4, r4
+ 516              	.LVL37:
+ 121:Core/Src/pwm_driver.c ****     ret |= HAL_TIMEx_PWMN_Start(&pwm_htim, TIM_CHANNEL_3);
+ 517              		.loc 1 121 5 is_stmt 1 view .LVU148
+ 518              		.loc 1 121 12 is_stmt 0 view .LVU149
+ 519 003e 0821     		movs	r1, #8
+ 520 0040 2846     		mov	r0, r5
+ 521 0042 FFF7FEFF 		bl	HAL_TIMEx_PWMN_Start
+ 522              	.LVL38:
+ 523              		.loc 1 121 9 discriminator 1 view .LVU150
+ 524 0046 2043     		orrs	r0, r0, r4
+ 525              	.LVL39:
+ 122:Core/Src/pwm_driver.c ****     return ret;
+ 526              		.loc 1 122 5 is_stmt 1 view .LVU151
+ 123:Core/Src/pwm_driver.c **** }
+ 527              		.loc 1 123 1 is_stmt 0 view .LVU152
+ 528 0048 C0B2     		uxtb	r0, r0
+ 529              	.LVL40:
+ 530              		.loc 1 123 1 view .LVU153
+ 531 004a 38BD     		pop	{r3, r4, r5, pc}
+ 532              	.L28:
+ 533              		.align	2
+ 534              	.L27:
+ 535 004c 00000000 		.word	pwm_htim
+ 536              		.cfi_endproc
+ 537              	.LFE144:
+ 539              		.section	.text.pwm_stop,"ax",%progbits
+ 540              		.align	1
+ 541              		.global	pwm_stop
+ 542              		.syntax unified
+ 543              		.thumb
+ 544              		.thumb_func
+ 546              	pwm_stop:
+ 547              	.LFB145:
+ 124:Core/Src/pwm_driver.c **** 
+ 125:Core/Src/pwm_driver.c **** int pwm_stop()
+ 126:Core/Src/pwm_driver.c **** {
+ 548              		.loc 1 126 1 is_stmt 1 view -0
+ 549              		.cfi_startproc
+ 550              		@ args = 0, pretend = 0, frame = 0
+ 551              		@ frame_needed = 0, uses_anonymous_args = 0
+ 552 0000 38B5     		push	{r3, r4, r5, lr}
+ 553              		.cfi_def_cfa_offset 16
+ 554              		.cfi_offset 3, -16
+ 555              		.cfi_offset 4, -12
+ 556              		.cfi_offset 5, -8
+ 557              		.cfi_offset 14, -4
+ 127:Core/Src/pwm_driver.c ****     int ret = 0;
+ 558              		.loc 1 127 5 view .LVU155
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 13
+
+
+ 559              	.LVL41:
+ 128:Core/Src/pwm_driver.c ****     ret |= HAL_TIM_PWM_Stop(&pwm_htim, TIM_CHANNEL_1);
+ 560              		.loc 1 128 5 view .LVU156
+ 561              		.loc 1 128 12 is_stmt 0 view .LVU157
+ 562 0002 124D     		ldr	r5, .L31
+ 563 0004 0021     		movs	r1, #0
+ 564 0006 2846     		mov	r0, r5
+ 565 0008 FFF7FEFF 		bl	HAL_TIM_PWM_Stop
+ 566              	.LVL42:
+ 567 000c 0446     		mov	r4, r0
+ 568              	.LVL43:
+ 129:Core/Src/pwm_driver.c ****     ret |= HAL_TIMEx_PWMN_Stop(&pwm_htim, TIM_CHANNEL_1);
+ 569              		.loc 1 129 5 is_stmt 1 view .LVU158
+ 570              		.loc 1 129 12 is_stmt 0 view .LVU159
+ 571 000e 0021     		movs	r1, #0
+ 572 0010 2846     		mov	r0, r5
+ 573 0012 FFF7FEFF 		bl	HAL_TIMEx_PWMN_Stop
+ 574              	.LVL44:
+ 575 0016 0443     		orrs	r4, r4, r0
+ 576              	.LVL45:
+ 577              		.loc 1 129 12 view .LVU160
+ 578 0018 E4B2     		uxtb	r4, r4
+ 579              	.LVL46:
+ 130:Core/Src/pwm_driver.c ****     ret |= HAL_TIM_PWM_Stop(&pwm_htim, TIM_CHANNEL_2);
+ 580              		.loc 1 130 5 is_stmt 1 view .LVU161
+ 581              		.loc 1 130 12 is_stmt 0 view .LVU162
+ 582 001a 0421     		movs	r1, #4
+ 583 001c 2846     		mov	r0, r5
+ 584 001e FFF7FEFF 		bl	HAL_TIM_PWM_Stop
+ 585              	.LVL47:
+ 586 0022 0443     		orrs	r4, r4, r0
+ 587              	.LVL48:
+ 588              		.loc 1 130 12 view .LVU163
+ 589 0024 E4B2     		uxtb	r4, r4
+ 590              	.LVL49:
+ 131:Core/Src/pwm_driver.c ****     ret |= HAL_TIMEx_PWMN_Stop(&pwm_htim, TIM_CHANNEL_2);
+ 591              		.loc 1 131 5 is_stmt 1 view .LVU164
+ 592              		.loc 1 131 12 is_stmt 0 view .LVU165
+ 593 0026 0421     		movs	r1, #4
+ 594 0028 2846     		mov	r0, r5
+ 595 002a FFF7FEFF 		bl	HAL_TIMEx_PWMN_Stop
+ 596              	.LVL50:
+ 597 002e 0443     		orrs	r4, r4, r0
+ 598              	.LVL51:
+ 599              		.loc 1 131 12 view .LVU166
+ 600 0030 E4B2     		uxtb	r4, r4
+ 601              	.LVL52:
+ 132:Core/Src/pwm_driver.c ****     ret |= HAL_TIM_PWM_Stop(&pwm_htim, TIM_CHANNEL_3);
+ 602              		.loc 1 132 5 is_stmt 1 view .LVU167
+ 603              		.loc 1 132 12 is_stmt 0 view .LVU168
+ 604 0032 0821     		movs	r1, #8
+ 605 0034 2846     		mov	r0, r5
+ 606 0036 FFF7FEFF 		bl	HAL_TIM_PWM_Stop
+ 607              	.LVL53:
+ 608 003a 0443     		orrs	r4, r4, r0
+ 609              	.LVL54:
+ 610              		.loc 1 132 12 view .LVU169
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 14
+
+
+ 611 003c E4B2     		uxtb	r4, r4
+ 612              	.LVL55:
+ 133:Core/Src/pwm_driver.c ****     ret |= HAL_TIMEx_PWMN_Stop(&pwm_htim, TIM_CHANNEL_3);
+ 613              		.loc 1 133 5 is_stmt 1 view .LVU170
+ 614              		.loc 1 133 12 is_stmt 0 view .LVU171
+ 615 003e 0821     		movs	r1, #8
+ 616 0040 2846     		mov	r0, r5
+ 617 0042 FFF7FEFF 		bl	HAL_TIMEx_PWMN_Stop
+ 618              	.LVL56:
+ 619              		.loc 1 133 9 discriminator 1 view .LVU172
+ 620 0046 2043     		orrs	r0, r0, r4
+ 621              	.LVL57:
+ 134:Core/Src/pwm_driver.c ****     return ret;
+ 622              		.loc 1 134 5 is_stmt 1 view .LVU173
+ 135:Core/Src/pwm_driver.c **** }
+ 623              		.loc 1 135 1 is_stmt 0 view .LVU174
+ 624 0048 C0B2     		uxtb	r0, r0
+ 625              	.LVL58:
+ 626              		.loc 1 135 1 view .LVU175
+ 627 004a 38BD     		pop	{r3, r4, r5, pc}
+ 628              	.L32:
+ 629              		.align	2
+ 630              	.L31:
+ 631 004c 00000000 		.word	pwm_htim
+ 632              		.cfi_endproc
+ 633              	.LFE145:
+ 635              		.global	duty_scalar
+ 636              		.section	.bss.duty_scalar,"aw",%nobits
+ 637              		.align	2
+ 640              	duty_scalar:
+ 641 0000 00000000 		.space	4
+ 642              		.global	pwm_htim
+ 643              		.section	.bss.pwm_htim,"aw",%nobits
+ 644              		.align	2
+ 647              	pwm_htim:
+ 648 0000 00000000 		.space	76
+ 648      00000000 
+ 648      00000000 
+ 648      00000000 
+ 648      00000000 
+ 649              		.text
+ 650              	.Letext0:
+ 651              		.file 2 "C:/Users/Anima/AppData/Roaming/Code/User/globalStorage/bmd.stm32-for-vscode/@xpack-dev-to
+ 652              		.file 3 "C:/Users/Anima/AppData/Roaming/Code/User/globalStorage/bmd.stm32-for-vscode/@xpack-dev-to
+ 653              		.file 4 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f746xx.h"
+ 654              		.file 5 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h"
+ 655              		.file 6 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h"
+ 656              		.file 7 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma.h"
+ 657              		.file 8 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim.h"
+ 658              		.file 9 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h"
+ 659              		.file 10 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h"
+ 660              		.file 11 "<built-in>"
+ARM GAS  C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 pwm_driver.c
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:21     .text.pwm_init:00000000 $t
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:27     .text.pwm_init:00000000 pwm_init
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:352    .text.pwm_init:00000154 $d
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:640    .bss.duty_scalar:00000000 duty_scalar
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:647    .bss.pwm_htim:00000000 pwm_htim
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:364    .text.pwm_set_frequency:00000000 $t
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:370    .text.pwm_set_frequency:00000000 pwm_set_frequency
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:388    .text.pwm_set_duty:00000000 $t
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:394    .text.pwm_set_duty:00000000 pwm_set_duty
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:438    .text.pwm_set_duty:00000038 $d
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:444    .text.pwm_start:00000000 $t
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:450    .text.pwm_start:00000000 pwm_start
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:535    .text.pwm_start:0000004c $d
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:540    .text.pwm_stop:00000000 $t
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:546    .text.pwm_stop:00000000 pwm_stop
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:631    .text.pwm_stop:0000004c $d
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:637    .bss.duty_scalar:00000000 $d
+C:\Users\Anima\AppData\Local\Temp\cc8kP38u.s:644    .bss.pwm_htim:00000000 $d
+
+UNDEFINED SYMBOLS
+memset
+HAL_TIM_Base_Init
+HAL_TIM_ConfigClockSource
+HAL_TIM_PWM_Init
+HAL_TIMEx_MasterConfigSynchronization
+HAL_TIM_PWM_ConfigChannel
+HAL_TIMEx_ConfigBreakDeadTime
+HAL_GPIO_Init
+Error_Handler
+SystemCoreClock
+HAL_TIM_PWM_Start
+HAL_TIMEx_PWMN_Start
+HAL_TIM_PWM_Stop
+HAL_TIMEx_PWMN_Stop
